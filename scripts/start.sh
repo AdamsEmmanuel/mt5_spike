@@ -25,6 +25,17 @@ else
   echo "== login check (terminal: $MT5_PATH)"
   # Run through cmd so Python gets proper Windows console handles.
   # Output goes to a Windows file, then gets copied where the report server reads it.
+    (
+    for i in $(seq 1 24); do
+      sleep 10
+      W=$(xwininfo -root -children 2>/dev/null | sed -n 's/^ *0x[0-9a-f]* "\([^"]*\)".*/\1/p' | grep -v '^$' | sort -u | tr '\n' '|')
+      echo "t+$((i*10))s windows=[$W] terminal_procs=$(pgrep -c terminal64 2>/dev/null || echo 0)" >> /tmp/spike/windows.txt
+      for w in $(xdotool search --name 'MetaTrader|Headway|Setup|License|Wizard|Language' 2>/dev/null | head -5); do
+        xdotool windowactivate --sync "$w" 2>/dev/null
+        xdotool key --clearmodifiers Return 2>/dev/null
+      done
+    done
+  ) &
   timeout 300 wine cmd /c "C:\Python311\python.exe -u Z:\opt\spike\check_login.py > C:\login.out 2>&1 < NUL"
   cp "$WINEPREFIX/drive_c/login.out" /tmp/spike/login.out 2>/dev/null \
     || echo "login.out was not written; the script never started" > /tmp/spike/login.out
