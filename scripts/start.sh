@@ -23,8 +23,11 @@ else
   REL="${TERM_UNIX#$WINEPREFIX/drive_c/}"
   export MT5_PATH="C:\\$(echo "$REL" | tr '/' '\\')"
   echo "== login check (terminal: $MT5_PATH)"
-  timeout 300 wine 'C:\Python311\python.exe' -u 'Z:\opt\spike\check_login.py' \
-    >/tmp/spike/login.out 2>&1
+  # Run through cmd so Python gets proper Windows console handles.
+  # Output goes to a Windows file, then gets copied where the report server reads it.
+  timeout 300 wine cmd /c "C:\Python311\python.exe -u Z:\opt\spike\check_login.py > C:\login.out 2>&1 < NUL"
+  cp "$WINEPREFIX/drive_c/login.out" /tmp/spike/login.out 2>/dev/null \
+    || echo "login.out was not written; the script never started" > /tmp/spike/login.out
   echo "login check exit code: $?" | tee -a /tmp/spike/login.out
 fi
 
