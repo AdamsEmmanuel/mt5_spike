@@ -39,6 +39,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, {
                 "login": login,
                 "memory_log_tail": read_text("mem.log").splitlines()[-20:],
+                "windows_tail": read_text("windows.txt").splitlines()[-30:],
                 "login_output_tail": read_text("login.out").splitlines()[-30:],
             })
         return self._send(404, {"error": "not found"})
