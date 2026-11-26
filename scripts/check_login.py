@@ -27,7 +27,7 @@ def main() -> None:
     result = {"login_requested": login, "server_requested": server}
     t0 = time.time()
     ok = mt5.initialize(path=path, login=login, password=password, server=server,
-                        timeout=120000)
+                        timeout=300000)
     result["initialized"] = bool(ok)
     result["seconds_to_initialize"] = round(time.time() - t0, 1)
     if not ok:
