@@ -7,7 +7,7 @@ import time
 
 import MetaTrader5 as mt5
 
-OUT_DIR = "/tmp/spike"  # inside the container; served via report_server.py
+OUT_DIR = "Z:/tmp/spike"  # Z: maps to the Linux root, so report_server.py can read it
 OUT = os.path.join(OUT_DIR, "login.json")
 
 
